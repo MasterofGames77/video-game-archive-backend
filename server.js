@@ -14,7 +14,7 @@ const rateLimit = require('express-rate-limit');
 const app = express();
 
 // Define the port to run the server on
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 // Middleware to parse URL-encoded bodies (as sent by HTML forms)
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -25,23 +25,25 @@ app.use(bodyParser.json());
 // Middleware to enable CORS (Cross-Origin Resource Sharing)
 app.use(cors());
 
-// Security Middleware
-app.use(helmet());
-app.use(compression());
-app.use(rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100 // limit each IP to 100 requests per windowMs
-}));
+// // Security Middleware
+// app.use(helmet());
+// app.use(compression());
+// app.use(rateLimit({
+//     windowMs: 15 * 60 * 1000, // 15 minutes
+//     max: 100 // limit each IP to 100 requests per windowMs
+// }));
 
 // Serve static files from the "public" and "game images" directories
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/game-images', express.static(path.join(__dirname, 'game images')));
 
-// Serve React frontend in production
+// Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../frontend/build')));
+
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
+
 
 // Create a connection to the MySQL database using configuration from environment variables
 const connection = mysql.createConnection({
@@ -78,6 +80,7 @@ app.get('/videogames/:id', (req, res) => {
 
 // Define a route to fetch all video games optionally filtered by query parameters
 app.get('/videogames', (req, res) => {
+    console.log('Request received:', req.query);
     const { title, developer, publisher, genre, platform } = req.query;
 
     // Construct the SQL query dynamically
@@ -111,8 +114,10 @@ app.get('/videogames', (req, res) => {
 
     connection.query(query, queryParams, (err, results) => {
         if (err) {
+            console.error('Database error:', err);
             return res.status(500).json({ error: err.message });
         }
+        console.log('Query results:', results);
         res.json(results);
     });
 });
