@@ -37,7 +37,6 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/game-images', express.static(path.join(__dirname, 'game images')));
 
-
 // Create a connection to the MySQL database using configuration from environment variables
 const connection = mysql.createConnection({
     host: process.env.DB_HOST,
