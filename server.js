@@ -122,7 +122,7 @@ app.get('/videogames', (req, res) => {
     });
 });
 
-// Define a route to fetch artwork URL for a specific video game by its ID
+// Define a route to fetch artwork URL for a specific video game by its ID.
 app.get('/videogames/:id/artwork', (req, res) => {
     const { id } = req.params;
     const query = 'SELECT artwork_url FROM videogames WHERE id = ?';
