@@ -37,13 +37,6 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/game-images', express.static(path.join(__dirname, 'game images')));
 
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../frontend/build')));
-
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
-});
-
 
 // Create a connection to the MySQL database using configuration from environment variables
 const connection = mysql.createConnection({
