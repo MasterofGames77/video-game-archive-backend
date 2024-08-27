@@ -6,9 +6,9 @@ const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
-const helmet = require('helmet');
-const compression = require('compression');
-const rateLimit = require('express-rate-limit');
+//const helmet = require('helmet');
+//const compression = require('compression');
+//const rateLimit = require('express-rate-limit');
 
 // Create an instance of express for our app
 const app = express();
@@ -36,6 +36,15 @@ app.use(cors());
 // Serve static files from the "public" and "game images" directories
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/game-images', express.static(path.join(__dirname, 'game images')));
+
+// Serve React frontend in production
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+    });
+}
 
 // Create a connection to the MySQL database using configuration from environment variables
 const connection = mysql.createConnection({
